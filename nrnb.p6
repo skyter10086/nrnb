@@ -14,11 +14,14 @@ sub rename_files(IO::Path $path, @new_names) {
     exit;
   }
   
-  my @origin_files = $path.dir:f;
-  my @old_names = @origin_files>>.Str.sort;
+  #my @origin_files = $path.dir.grep(*.f);
+  #my @old_names = @origin_files>>.Str.sort;
+  my @old_names = $path.dir.grep(*.f)
+                           .map(*.Str)
+                           .sort;
   
-  unless (@old_names.elems == @origin_files.elems) {
-    say 'The files count  not matches with the names count.';
+  unless (@old_names.elems == @new_names.elems) {
+    say 'The files count does not match the names count.';
     exit;
   }
 
@@ -28,7 +31,7 @@ sub rename_files(IO::Path $path, @new_names) {
 
   for  0 .. @old_names.elems-1 -> $i {
     $old_name = @old_names[$i]; 
-    $dir_name = @origin_files[$i].dirname;
+    $dir_name = @old_names[$i].IO.dirname;
 
     if @old_names[$i] ~~ rx/(\.\w+)/ {
       $new_name = $dir_name ~ '/' ~ @new_names[$i] ~ $0;  
@@ -39,7 +42,7 @@ sub rename_files(IO::Path $path, @new_names) {
     rename($old_name, $new_name);
     say 'Rename [' ~ $old_name ~'] To [' ~ $new_name ~ '].';
   }
-  say @old_names.elems ~ " files done.";
+  say "Total " ~ @old_names.elems ~ " files done.";
 
 }
 
