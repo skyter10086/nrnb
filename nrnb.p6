@@ -47,7 +47,9 @@ sub rename_files(IO::Path $path, @new_names) {
 }
 
 sub MAIN(Str $path_name, Str $csv_name) {
-  my @data = csv(in => $csv_name) or die "CSV file is not work.";
-  my $path_ = $path_name.IO or die "The $path_name directory is not exist.";
+  my @data = csv(in => $csv_name) or 
+             die "CSV file is not work.";
+  my $path_ = $path_name.IO or 
+              die "The $path_name directory is not exist.";
   rename_files($path_, @data);
 }
