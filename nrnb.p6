@@ -15,10 +15,10 @@ sub rename_files(IO::Path $path, @new_names) {
   }
   
   my @origin_files = $path.dir:f;
-  my @old_names = @origin_files>>.Str;
+  my @old_names = @origin_files>>.Str.sort;
   
   unless (@old_names.elems == @origin_files.elems) {
-    say 'The files are not compatiable with the names.';
+    say 'The files count  not matches with the names count.';
     exit;
   }
 
@@ -31,15 +31,13 @@ sub rename_files(IO::Path $path, @new_names) {
     $dir_name = @origin_files[$i].dirname;
 
     if @old_names[$i] ~~ rx/(\.\w+)/ {
-      $new_name = $dir_name ~ '/' ~ @new_names[$i] ~ $0;
-      @origin_files[$i].rename($new_name);
-      say 'Rename [' ~ $old_name ~'] To [' ~ $new_name ~ '].';
+      $new_name = $dir_name ~ '/' ~ @new_names[$i] ~ $0;  
     } else {
       $new_name = $dir_name ~ '/' ~ @new_names[$i];
-      @origin_files[$i].rename($new_name);
-      say 'Rename [' ~ $old_name ~'] To [' ~ $new_name ~ '].';
     }
-  
+    
+    rename($old_name, $new_name);
+    say 'Rename [' ~ $old_name ~'] To [' ~ $new_name ~ '].';
   }
   say @old_names.elems ~ " files done.";
 
